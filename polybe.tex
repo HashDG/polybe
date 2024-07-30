@@ -1,0 +1,72 @@
+\documentclass{article}
+
+\title{Carré de polybe}
+\author{Hippolyte DAMAY--GLORIEUX}
+\date{Juillet 2024}
+
+\begin{document}
+
+\maketitle
+
+\section{Comment utiliser ?}
+
+Il vous suffit de modifier les lignes débutant par \verb|Entrée :|.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   CHIFFREMENT DU MESSAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcount\size      \size=5
+\newcount\absi      % abscisses
+\newcount\ordo      % ordonnées
+\newcount\char      % caractère
+\newcount\posi      % position dans l'alphabet
+
+\newcommand{\modulo}[2]{\def\modloop{\newcount\temp\temp=\a
+\advance\temp by-\n
+\ifnum\temp<0\let\next=\relax
+\else\a=\temp
+\fi\next
+}\newcount\a\newcount\n\a=#1\n=#2
+\let\next=\modloop
+\modloop
+\ifnum\a=0\absi=5
+\else\absi=\a
+\fi
+}
+
+\newcommand{\ordonnees}[2]{\newcount\a\newcount\q\a=#1\q=#2
+\advance\a by-1\divide\a by\q\advance\a by1\ordo=\a}
+
+\newcommand{\polybeCypher}[1]{\charToInt{#1}\ordonnees{\the\posi}{\the\size}\modulo{\the\posi}{\the\size}}
+
+\def\charToInt #1{\def\a{a}\def\b{b}\def\c{c}\def\d{d}\def\e{e}\def\f{f}\def\g{g}\def\h{h}\def\i{i}\def\j{j}\def\k{k}\def\l{l}\def\m{m}\def\n{n}\def\o{o}\def\p{p}\def\q{q}\def\r{r}\def\s{s}\def\t{t}\def\u{u}\def\v{v}\def\w{w}\def\x{x}\def\y{y}\def\z{z}\if\a#1\posi=1\else\if\b#1\posi=2\else\if\c#1\posi=3\else\if\d#1\posi=4\else\if\e#1\posi=5\else\if\f#1\posi=6\else\if\g#1\posi=7\else\if\h#1\posi=8\else\if\i#1\posi=9\else\if\j#1\posi=9\else\if\k#1\posi=10\else\if\l#1\posi=11\else\if\m#1\posi=12\else\if\n#1\posi=13\else\if\o#1\posi=14\else\if\p#1\posi=15\else\if\q#1\pos=16\else\if\r#1\posi=17\else\if\s#1\posi=18\else\if\t#1\posi=19\else\if\u#1\posi=20\else\if\v#1\posi=21\else\if\w#1\posi=22\else\if\x#1\posi=23\else\if\y#1\posi=24\else\if\z#1\posi=25\else\posi=0\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}
+
+\def\cypher #1{\spell#1{}}
+\def\spell  #1{\ifx^#1^\else\polybeCypher{#1}\the\ordo\the\absi\expandafter\spell\fi}
+
+\section{Chiffrement de message}
+
+Entrée : "bonjour" \\
+Sortie : "\cypher{bonjour}"
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   DECHIFFREMENT DU MESSAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcount\cinq      \cinq=5
+\newcount\cord      % coordonnées
+
+\newcommand{\intToChar}[1]{\ifnum#1=1a\else\ifnum#1=2b\else\ifnum#1=3c\else\ifnum#1=4d\else\ifnum#1=5e\else\ifnum#1=6f\else\ifnum#1=7g\else\ifnum#1=8h\else\ifnum#1=9j\else\ifnum#1=10k\else\ifnum#1=11l\else\ifnum#1=12m\else\ifnum#1=13n\else\ifnum#1=14o\else\ifnum#1=15p\else\ifnum#1=16q\else\ifnum#1=17r\else\ifnum#1=18s\else\ifnum#1=19t\else\ifnum#1=20u\else\ifnum#1=21v\else\ifnum#1=22w\else\ifnum#1=23x\else\ifnum#1=24y\else\ifnum#1=25z\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi}
+
+\newcommand{\polybeDecypher}{\advance\cord by-1\multiply\cord by\cinq\advance\cord by\absi\intToChar{\the\cord}}
+
+\def\decypher #1{\dspellA#1{}}
+\def\dspellA #1{\ifx^#1^\else\cord=#1\expandafter\dspellB\fi}
+\def\dspellB #1{\ifx^#1^\else\absi=#1\polybeDecypher{}\expandafter\dspellA\fi}
+
+\section{Déchiffrement de message}
+
+Entrée : "12343324344542" \\
+Sortie : "\decypher{12343324344542}"
+
+\end{document}
